@@ -13,7 +13,7 @@ This phenomenon does not occur if the cable is connected in the reverse order fr
 To understand and diagnose this issue, the following methods were employed:
 
 - GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `LW_GPIO02` for Pico W).
-- RP2040 register: monitored the `USBCTRL_REGS` on the RP2040 chip.
+- RP2040 register: monitored the `USB: SIE_STATUS` register on the RP2040.
 - TinyUSB: call `tud_ready()` function to check if USB communication was ready.
 
 The monitoring results matched the USB communication state, but the behavior of the Pico W when connected to the host PC was not as expected. Further behavior is detailed below.
@@ -51,23 +51,23 @@ To observe the UART output under battery power, use the [Raspberry Pi Debug Prob
 For the Pico, when connected to the host PC, the status changes as follows:
 ```
 Waiting for USB connection
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x00000015) disconnect, VBUS low
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x00000015) disconnect, VBUS low
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x00000015) disconnect, VBUS low
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
+BOARD=pico, TinyUSB not ready, USB_SIE_STATUS=0x00000015 disconnect, VBUS low
+BOARD=pico, TinyUSB not ready, USB_SIE_STATUS=0x00000015 disconnect, VBUS low
+BOARD=pico, TinyUSB not ready, USB_SIE_STATUS=0x00000015 disconnect, VBUS low
+BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
+BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
+BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
 
 ```
 However, for the Pico W, even when the host PC's type-C cable is connected, the status does not change:
 ```
 Waiting for USB connection
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
+BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
 ```
 
 The USB connection status recognized by the devices matches the device recognition status on the host PC side. Interestingly, if you boot the Pico in `BOOTSEL mode` while powered by VSYS and connect it to the host PC, the `RPI RP2` disk will mount, but in the case of Pico W, there is no change in USB connection status, and the disk does not mount.
