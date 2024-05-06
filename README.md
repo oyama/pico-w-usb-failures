@@ -1,14 +1,32 @@
-# Raspberry Pi Pico W Battery-Powered USB Connection Issue
+# Battery-Powered Raspberry Pi Pico W and USB Type-C Connection Issue
 
-This repository demonstrates an issue with the Raspberry Pi Pico W when powered by battery and failing to detect a USB connection to a host PC. While the Raspberry Pi Pico initializes and communicates over USB under the same conditions, the Pico W does not.
+This repository investigates a specific issue that occurs when the battery-powered Raspberry Pi Pico W is connected to a host PC via a USB Type-C connection. Specifically, the following connection sequence fails to initiate USB communication:
 
-Both _Pico_ and _Pico W_ can be powered by two power sources: __VBUS__ (USB power) and __VSYS__ (battery power). The issue arises specifically when the Pico W is connected to the host PC via USB while powered by VSYS. It does not initiate communication unless VSYS is disconnected, a limitation not observed with the standard Pico.
+1. Connect the USB cable to the micro USB connector of the Pico W.
+2. Connect the USB cable to the Type-C connector of the host PC.
+
+This phenomenon does not occur if the cable is connected in the reverse order from the host PC to the Pico W, or when using a USB Type-A connection, and interestingly, it does not occur with the standard Raspberry Pi Pico either.
+
+
+## Technical Investigation
+
+To understand and diagnose this issue, the following methods were employed:
+
+- GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `LW_GPIO02` for Pico W).
+- RP2040 register: monitored the `USBCTRL_REGS` on the RP2040 chip.
+- TinyUSB: call `tud_ready()` function to check if USB communication was ready.
+
+The monitoring results matched the USB communication state, but the behavior of the Pico W when connected to the host PC was not as expected. Further behavior is detailed below.
+
+### Circuit Diagram
+
+(diagram)
 
 ## Build and Install Instructions
 
-Clone this repository and build the project as follows:
+The source code available in this repository monitors the USB connection status of both Pico and Pico W, continuously reporting the USB connection state to UART every second after cable attachment and detachment operations.
 
-### For Raspberry Pi Pico
+### Build Instructions for Pico
 
 ```bash
 mkdir build; cd build
@@ -16,7 +34,7 @@ PICO_SDK_FETCH_FROM_GIT=1 cmake -DPICO_BOARD=pico ..
 make
 ```
 
-### For Raspberry Pi Pico W
+### Build Instructions for Pico W
 
 ```bash
 mkdir build; cd build
@@ -24,24 +42,13 @@ PICO_SDK_FETCH_FROM_GIT=1 cmake -DPICO_BOARD=pico_w ..
 make
 ```
 
-In the instructions above, `PICO_SDK_FETCH_FROM_GIT` is set to ensure that the latest pico-sdk is fetched from GitHub. Alternatively, you can use a locally deployed SDK by setting the `PICO_SDK_PATH` environment variable.
-After compilation, the firmware `picow-usb-failures.uf2` will be generated. Simply drag and drop it onto the device to install.
+The above examples specify the environment variable `PICO_SDK_FETCH_FROM_GIT` to download the pico-sdk from GitHub. If you want to specify a locally deployed pico-sdk, you should set it with the `PICO_SDK_PATH` environment variable.
+Once built, the firmware `picow-usb-failures.uf2` will be generated. Simply drag and drop it onto your device to install.
 
+## Monitoring USB Connection Status
 
-## Monitoring the Behavior
-
-This demonstration outputs multiple states to the UART to indicate the USB connection status:
-
-- Calling TinyUSB's `tud_ready()` function.
-- Reading the RP2040's `USBCTRL_REGS` register.
-- Reading the GPIO VBUS status (`GPIO24` for Pico and `WL_GPIO02` for Pico W).
-
-These outputs help track the differences in USB handling between the devices.
-
-During operation, status updates are output to the UART every second. To observe these outputs when USB is not connected, connect to the UART using the [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html).
-
-When the Pico, powered by battery, is connected to a host PC via USB, the following changes in status occur:
-
+To observe the UART output under battery power, use the [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) to monitor the UART.
+For the Pico, when connected to the host PC, the status changes as follows:
 ```
 Waiting for USB connection
 BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x00000015) disconnect, VBUS low
@@ -52,9 +59,7 @@ BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
 BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
 
 ```
-
-In contrast, when the Pico W, also powered by battery, is connected to the host PC via USB, it does not exhibit the same changes as the Pico:
-
+However, for the Pico W, even when the host PC's type-C cable is connected, the status does not change:
 ```
 Waiting for USB connection
 BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
@@ -65,23 +70,7 @@ BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS 
 BOARD=pico_w, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
 ```
 
-When disconnected from the USB host while running on battery power, both Pico and Pico W change state as expected:
-
-```
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
-BOARD=pico, TinyUSB ready, USBCTRL_REG(value=0x40050005) connect, VBUS high
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-BOARD=pico, TinyUSB not ready, USBCTRL_REG(value=0x40050015) disconnect, VBUS low
-```
-
-The states of both Pico and Pico W correspond to the device connection status as seen from the host PC.
-These differences in behavior between the devices can also be observed when they are powered by battery, booted in BOOTSEL mode, and then connected to a host PC. The battery-powered Pico will mount as an RPI RP2 disk on the host PC, but nothing happens with the Pico W.
-
-## Circuit Diagram
-
-Pending.
+The USB connection status recognized by the devices matches the device recognition status on the host PC side. Interestingly, if you boot the Pico in `BOOTSEL mode` while powered by VSYS and connect it to the host PC, the `RPI RP2` disk will mount, but in the case of Pico W, there is no change in USB connection status, and the disk does not mount.
 
 ## References
 
