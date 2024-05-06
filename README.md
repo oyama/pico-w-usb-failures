@@ -20,7 +20,7 @@ The monitoring results matched the USB communication state, but the behavior of 
 
 ### Circuit Diagram
 
-(diagram)
+![circuit_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/471b1af7-6ae8-4a95-bc96-b0483076e734)
 
 ## Build and Install Instructions
 
