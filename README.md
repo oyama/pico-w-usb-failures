@@ -12,7 +12,7 @@ This phenomenon does not occur if the cable is connected in the reverse order fr
 
 To understand and diagnose this issue, the following methods were employed:
 
-- GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `LW_GPIO02` for Pico W).
+- GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `WL_GPIO 2` for Pico W).
 - RP2040 register: monitored the `USB: SIE_STATUS` register on the RP2040.
 - TinyUSB: call `tud_ready()` function to check if USB communication was ready.
 
@@ -74,7 +74,7 @@ The USB connection status recognized by the devices matches the device recogniti
 
 ## Temporary solutions
 
-This problem can be avoided by setting `LW_GPIO02` to __Low__.
+This problem can be avoided by setting `WL_GPIO 2` to __Low__.
 ```diff
      cyw43_arch_init();
 +    cyw43_arch_gpio_put(2, 0);
