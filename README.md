@@ -6,8 +6,7 @@ This repository investigates a specific issue that occurs when the battery-power
 2. Connect the USB cable to the micro USB connector of the Pico W.
 3. Connect the USB cable to the Type-C connector of the host PC.
 
-This phenomenon does not occur if the cable is connected in the reverse order from the host PC to the Pico W, or when using a USB Type-A connection, and interestingly, it does not occur with the standard Raspberry Pi Pico either.
-
+This phenomenon does not occur if the cable is connected in the reverse order from the host PC to the Pico W, or when using a USB Type-A connection. And interestingly, it does not occur with the standard Raspberry Pi Pico either.
 
 ## Technical Investigation
 
@@ -19,15 +18,11 @@ To understand and diagnose this issue, the following methods were employed:
 
 The monitoring results matched the USB communication state, but the behavior of the Pico W when connected to the host PC was not as expected. Further behavior is detailed below.
 
-### Circuit Diagram
+### Build and Install Instructions
 
-![circut_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/064b206d-8506-4cf4-a0ed-b6e6422890a5)
+The build requires the [pico-sdk](https://github.com/raspberrypi/pico-sdk) build environment; refer to [Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare the toolchain for your platform.
 
-## Build and Install Instructions
-
-The source code available in this repository monitors the USB connection status of both Pico and Pico W, continuously reporting the USB connection state to UART every second after cable attachment and detachment operations.
-
-### Build Instructions for Pico
+#### Build for Pico
 
 ```bash
 mkdir build; cd build
@@ -35,7 +30,7 @@ PICO_SDK_FETCH_FROM_GIT=1 cmake -DPICO_BOARD=pico ..
 make
 ```
 
-### Build Instructions for Pico W
+#### Build for Pico W
 
 ```bash
 mkdir build; cd build
@@ -46,8 +41,13 @@ make
 The above examples specify the environment variable `PICO_SDK_FETCH_FROM_GIT` to download the pico-sdk from GitHub. If you want to specify a locally deployed pico-sdk, you should set it with the `PICO_SDK_PATH` environment variable.
 Once built, the firmware `picow-usb-failures.uf2` will be generated. Simply drag and drop it onto your device to install.
 
+### Circuit Diagram
+
+![circut_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/064b206d-8506-4cf4-a0ed-b6e6422890a5)
+
 ## Monitoring USB Connection Status
 
+Firmware from this repository monitors the USB connection status of Pico and Pico W and continuously reports the USB connection status to the UART every second.
 To observe the UART output under battery power, use the [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) to monitor the UART.
 For the Pico, when connected to the host PC, the status changes as follows:
 ```
