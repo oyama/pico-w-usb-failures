@@ -2,8 +2,9 @@
 
 This repository investigates a specific issue that occurs when the battery-powered Raspberry Pi Pico W is connected to a host PC via a USB Type-C connection. Specifically, the following connection sequence fails to initiate USB communication:
 
-1. Connect the USB cable to the micro USB connector of the Pico W.
-2. Connect the USB cable to the Type-C connector of the host PC.
+1. Supply power to Pico W's VSYS.
+2. Connect the USB cable to the micro USB connector of the Pico W.
+3. Connect the USB cable to the Type-C connector of the host PC.
 
 This phenomenon does not occur if the cable is connected in the reverse order from the host PC to the Pico W, or when using a USB Type-A connection, and interestingly, it does not occur with the standard Raspberry Pi Pico either.
 
@@ -20,7 +21,7 @@ The monitoring results matched the USB communication state, but the behavior of 
 
 ### Circuit Diagram
 
-![circuit_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/471b1af7-6ae8-4a95-bc96-b0483076e734)
+![circut_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/064b206d-8506-4cf4-a0ed-b6e6422890a5)
 
 ## Build and Install Instructions
 
@@ -57,7 +58,6 @@ BOARD=pico, TinyUSB not ready, USB_SIE_STATUS=0x00000015 disconnect, VBUS low
 BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
 BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
 BOARD=pico, TinyUSB ready, USB_SIE_STATUS=0x40050005 connect, VBUS high
-
 ```
 However, for the Pico W, even when the host PC's type-C cable is connected, the status does not change:
 ```
