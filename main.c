@@ -13,9 +13,8 @@
 #define USB_SIE_STATUS_REG        ((volatile uint32_t *)(USBCTRL_REGS_BASE + 0x50))  // SIE status register
 #define USB_SIE_STATUS_SUSPENDED  0b00000000000000000000000000010000                 // Bus in suspended state
 
-#define ANSI_RED           "\e[31m"
-#define ANSI_GREEN         "\e[32m"
-#define ANSI_CLEAR         "\e[0m"
+#define COLOR_RED(format)    ("\e[31m" format "\e[0m")
+#define COLOR_GREEN(format)  ("\e[32m" format "\e[0m")
 
 
 static void init_vbus_gpio(void) {
@@ -47,18 +46,12 @@ int main(void) {
     while (true) {
         printf("BOARD=%s, ", TARGET_PICO_BOARD);
         printf("TinyUSB %s, ",
-               (tud_ready()
-                   ? ANSI_GREEN "ready" ANSI_CLEAR
-                   : ANSI_RED "not ready" ANSI_CLEAR));
+            tud_ready() ? COLOR_GREEN("ready") : COLOR_RED("not ready"));
         printf("USB_SIE_STATUS=0x%08lX %s, ",
-               *USB_SIE_STATUS_REG,
-               (!is_usb_sie_status_suspended()
-                   ? ANSI_GREEN "connect" ANSI_CLEAR
-                   : ANSI_RED "disconnect" ANSI_CLEAR));
+            *USB_SIE_STATUS_REG,
+            (!is_usb_sie_status_suspended() ? COLOR_GREEN("connect") : COLOR_RED("disconnect")));
         printf("VBUS %s\n",
-               (vbus_supplied()
-                   ? ANSI_GREEN "high" ANSI_CLEAR
-                   : ANSI_RED "low" ANSI_CLEAR));
+            vbus_supplied() ? COLOR_GREEN("high") : COLOR_RED("low"));
         sleep_ms(1000);
     }
 }
