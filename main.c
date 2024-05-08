@@ -3,15 +3,13 @@
 #include <stdio.h>
 #include <tusb.h>
 
-#if defined(PICO_BOARD_PICO_W)
+#if defined(RASPBERRYPI_PICO_W)
 #include <pico/cyw43_arch.h>
 #define TARGET_PICO_BOARD  "pico_w"
 #else
 #define TARGET_PICO_BOARD  "pico"
 #endif
 
-#define PICO_VBUS_GPIO     24  // Pico   IP VBUS sense - high if VBUS is present, else low
-#define PICOW_VBUS_WL_GPIO  2  // Pico-W IP VBUS sense - high if VBUS is present, else low
 #define USB_SIE_STATUS_REG        ((volatile uint32_t *)(USBCTRL_REGS_BASE + 0x50))  // SIE status register
 #define USB_SIE_STATUS_SUSPENDED  0b00000000000000000000000000010000                 // Bus in suspended state
 
@@ -21,11 +19,11 @@
 
 
 static void init_vbus_gpio(void) {
-#if defined(PICO_BOARD_PICO_W)
+#if defined(RASPBERRYPI_PICO_W)
     cyw43_arch_init();
 #else
-    gpio_init(PICO_VBUS_GPIO);
-    gpio_set_dir(PICO_VBUS_GPIO, GPIO_IN);
+    gpio_init(PICO_VBUS_PIN);
+    gpio_set_dir(PICO_VBUS_PIN, GPIO_IN);
 #endif
 }
 
@@ -34,10 +32,10 @@ static bool is_usb_sie_status_suspended(void) {
 }
 
 static bool vbus_supplied(void) {
-#if defined(PICO_BOARD_PICO_W)
-    return cyw43_arch_gpio_get(PICOW_VBUS_WL_GPIO);
+#if defined(RASPBERRYPI_PICO_W)
+    return cyw43_arch_gpio_get(CYW43_WL_GPIO_VBUS_PIN);
 #else
-    return gpio_get(PICO_VBUS_GPIO);
+    return gpio_get(PICO_VBUS_PIN);
 #endif
 }
 

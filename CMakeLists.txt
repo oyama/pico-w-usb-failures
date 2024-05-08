@@ -12,7 +12,6 @@ pico_sdk_init()
 add_executable(${CMAKE_PROJECT_NAME} main.c)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE pico_stdlib)
 if(PICO_BOARD STREQUAL "pico_w")
-  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -DPICO_BOARD_PICO_W)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE pico_cyw43_arch_none)
 endif()
 
