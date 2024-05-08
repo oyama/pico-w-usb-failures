@@ -72,6 +72,22 @@ BOARD=pico_w, TinyUSB not ready, USB_SIE_STATUS=0x40050015 disconnect, VBUS low
 
 The USB connection status recognized by the devices matches the device recognition status on the host PC side. Interestingly, if you boot the Pico in `BOOTSEL mode` while powered by VSYS and connect it to the host PC, the `RPI RP2` disk will mount, but in the case of Pico W, there is no change in USB connection status, and the disk does not mount.
 
+### Actual voltage of VBUS
+
+A multimeter was used to measure the change in voltage on `VBUS`(pin 40) and `GND`(pin 38) of Pico and Pico W.
+
+Pico:
+
+- Power supplied VSYS and USB cable disconnected: `0.42 V`
+- Power supplied VSYS, USB cable connected to Pico and finally to host: `5.17 V`
+- Power supplied VSYS, USB cable connected to host and finally to Pico: `5.17 V`
+
+Pico W:
+
+- Power supplied VSYS and USB cable disconnected: `1.36 V`
+- Power supplied VSYS, USB cable connected to Pico W and finally to host: `0.97..1.09 V` (Multimeter readings are not stable)
+- Power supplied VSYS, USB cable connected to host and finally to Pico W: `5.16 V`
+
 ## Temporary solutions
 
 This problem can be avoided by setting `WL_GPIO 2` to __Low__.
