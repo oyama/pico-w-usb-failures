@@ -74,19 +74,19 @@ The USB connection status recognized by the devices matches the device recogniti
 
 ### Actual voltage of VBUS
 
-A multimeter was used to measure the change in voltage on `VBUS`(pin 40) and `GND`(pin 38) of Pico and Pico W.
+A multimeter was used to measure the change in voltage on `VBUS`(pin 40) and `GND`(pin 38) of Pico and Pico W. Power is supplied to `VSYS` under all conditions.
 
 Pico:
 
-- Power supplied VSYS and USB cable disconnected: `0.42 V`
-- Power supplied VSYS, USB cable connected to Pico and finally to host: `5.17 V`
-- Power supplied VSYS, USB cable connected to host and finally to Pico: `5.17 V`
+- USB cable disconnected: `0.42 V`
+- USB cable connected to Pico, and finally to host: `5.17 V`
+- USB cable connected to host, and finally to Pico: `5.17 V`
 
 Pico W:
 
-- Power supplied VSYS and USB cable disconnected: `1.36 V`
-- Power supplied VSYS, USB cable connected to Pico W and finally to host: `0.97..1.09 V` (Multimeter readings are not stable)
-- Power supplied VSYS, USB cable connected to host and finally to Pico W: `5.16 V`
+- USB cable disconnected: `1.36 V`
+- USB cable connected to Pico W, and finally to host: `0.97..1.09 V` (Multimeter readings are not stable)
+- USB cable connected to host, and finally to Pico W: `5.16 V`
 
 ## Temporary solutions
 
