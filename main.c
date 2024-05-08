@@ -5,9 +5,6 @@
 
 #if defined(RASPBERRYPI_PICO_W)
 #include <pico/cyw43_arch.h>
-#define TARGET_PICO_BOARD  "pico_w"
-#else
-#define TARGET_PICO_BOARD  "pico"
 #endif
 
 #define USB_SIE_STATUS_REG        ((volatile uint32_t *)(USBCTRL_REGS_BASE + 0x50))  // SIE status register
@@ -44,7 +41,7 @@ int main(void) {
 
     printf("Waiting for USB connection\n");
     while (true) {
-        printf("BOARD=%s, ", TARGET_PICO_BOARD);
+        printf("BOARD=%s, ", PICO_BOARD);
         printf("TinyUSB %s, ",
             tud_ready() ? COLOR_GREEN("ready") : COLOR_RED("not ready"));
         printf("USB_SIE_STATUS=0x%08lX %s, ",
