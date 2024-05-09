@@ -12,8 +12,8 @@ This phenomenon does not occur if the cable is connected in the reverse order fr
 
 To understand and diagnose this issue, the following methods were employed:
 
-- GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `WL_GPIO 2` for Pico W).
-- RP2040 register: monitored the `USB: SIE_STATUS` register on the RP2040.
+- GPIO: monitored GPIOs connected to VBUS (`GPIO24`[^1] for Pico and `WL_GPIO 2`[^2] for Pico W).
+- RP2040 register: monitored the `USB: SIE_STATUS` register[^3] on the RP2040.
 - TinyUSB: call `tud_ready()` function to check if USB communication was ready.
 - Voltage on VBUS: the voltage on `VBUS` (between pins 40 VBUS and 38 GND) was measured with a multimeter.
 
@@ -22,7 +22,7 @@ The monitoring results matched the USB communication state, but the behavior of 
 
 ### Build and Install Instructions
 
-The [pico-sdk](https://github.com/raspberrypi/pico-sdk) build environment is required to build the firmware used for this monitoring, see  [Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare the toolchain for your platform.
+The pico-sdk[^4] build environment is required to build the firmware used for this monitoring, see  _Getting started with Raspberry Pi Pico_[^5] to prepare the toolchain for your platform.
 
 #### Build for Pico
 
@@ -50,7 +50,7 @@ Once built, the firmware `picow-usb-failures.uf2` will be generated. Simply drag
 ## Results
 
 Firmware from this repository monitors the USB connection status of Pico and Pico W and continuously reports the USB connection status to the UART every second.
-To observe the UART output under battery power, use the [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) to monitor the UART.
+To observe the UART output under battery power, use the _Raspberry Pi Debug Probe_[^6] to monitor the UART.
 For the Pico, when connected to the host PC, the status changes as follows:
 ```
 Waiting for USB connection
@@ -91,12 +91,13 @@ Pico W:
 - USB cable connected to host, and finally to Pico W: `5.16 V`
 
 Under the conditions in question, the host PC does not supply VBUS power to the Pico W when the cable is connected.
-Furthermore, the VBUS on the Pico W showed a voltage of `1.36 V` when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery.
+Furthermore, the VBUS on the Pico W showed a voltage of `1.36 V` when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery[^7].
 
 ## Conclusion
 
-The VBUS of Pico W during battery operation exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery. It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons.
-It would be preferable if Pico W could modify the circuitry or firmware to address this issue, but fortunately there are two countermeasures available for end-users to adopt.
+The VBUS of the Pico W during battery operation exceeds `vSafe0V` (0-0.8V). It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons. micro USB and Type-C cable circuits for mixed use are defined in USB Type-C Spec[^8] as _Legacy Cable Assemblies_ which is defined as. The circuits and states expected when connecting devices using these cables are then explicitly stated. A device with a VBUS in excess of `vSafe0V`, as in this Issue, connecting to a host PC with Type-C would have unintended consequences for the user.
+
+It would be desirable if Pico W could address this issue by changing the circuitry or firmware, and it would be useful to mention this issue in the Pico W datasheet. Fortunately, there are two measures that end-users can adopt now.
 
 ### Software temporary solution
 
@@ -117,12 +118,16 @@ Pull-down resistor `R1` works as expected at around 1 kOhm. Considering the USB 
 
 ## Acknowledgements
 
-I would like to express my gratitude to the [Raspberry Pi Pico forum](https://forums.raspberrypi.com/viewtopic.php?t=370292) for their invaluable advice and insights, which greatly assisted in the development of the solutions documented in this README. Your contributions have been instrumental in making these improvements possible.
+I would like to express my gratitude to the Raspberry Pi Pico forum[^9] for their invaluable advice and insights, which greatly assisted in the development of the solutions documented in this README. Your contributions have been instrumental in making these improvements possible.
 
 ## References
 
-- [Raspberry Pi Pico Datasheet](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
-- [Raspberry Pi Pico W Datasheet](https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf)
-- [RP2040 Datasheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
-- [USB Type-C® Cable and Connector Specification](https://www.usb.org/document-library/usb-type-cr-cable-and-connector-specification-release-23)
-- [Universal Serial Bus Power Delivery Specification](https://usb.org/document-library/usb-power-delivery)
+[^1]: [Raspberry Pi Pico Datasheet](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
+[^2]: [Raspberry Pi Pico W Datasheet](https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf)
+[^3]: [RP2040 Datasheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
+[^4]: [pico-sdk](https://github.com/raspberrypi/pico-sdk)
+[^5]: [Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
+[^6]: [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) 
+[^7]: [Universal Serial Bus Power Delivery Specification](https://usb.org/document-library/usb-power-delivery)
+[^8]: [USB Type-C® Cable and Connector Specification](https://www.usb.org/document-library/usb-type-cr-cable-and-connector-specification-release-23)
+[^9]: [Raspberry Pi Pico forum](https://forums.raspberrypi.com/viewtopic.php?t=370292)
