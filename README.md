@@ -89,11 +89,11 @@ Pico W:
 - USB cable connected to host, and finally to Pico W: `5.16 V`
 
 Under the conditions in question, the host PC does not supply VBUS power to the Pico W when the cable is connected.
-Furthermore, the VBUS on the Pico W showed a voltage of 1.36V when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery.
+Furthermore, the VBUS on the Pico W showed a voltage of `1.36 V` when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery.
 
 ## Conclusion
 
-The VBUS of Pico W during battery operation exceeds the 'vSafe0V' (0-0.8V) defined by USB Power Delivery. It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons.
+The VBUS of Pico W during battery operation exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery. It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons.
 It would be preferable if Pico W could modify the circuitry or firmware to address this issue, but fortunately there are two countermeasures available for end-users to adopt.
 
 ### Software temporary solution
