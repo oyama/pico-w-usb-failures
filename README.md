@@ -90,12 +90,26 @@ Pico W:
 
 ## Temporary solutions
 
+### Software solution
+
 This problem can be avoided by setting `WL_GPIO 2` to __Low__.
 ```diff
      cyw43_arch_init();
 +    cyw43_arch_gpio_put(2, 0);
 ```
 This is not a good approach, although the behaviour is as expected.
+
+### Hardware solution
+
+This problem can be avoided by pull-down the `VBUS`.
+
+![Pico W USB Pull-down](https://github.com/oyama/pico-w-usb-failures/assets/27072/bc719325-4708-4c03-8ac4-2c62f3b2c0bb)
+
+Pull-down resistor `R1` works as expected at around 1 kOhm. Considering the USB suspend requirements, around 10 kOhm may be appropriate, but this has not been tested.
+
+## Acknowledgements
+
+I would like to express my gratitude to the [Raspberry Pi Pico forum](https://forums.raspberrypi.com/viewtopic.php?t=370292) for their invaluable advice and insights, which greatly assisted in the development of the solutions documented in this README. Your contributions have been instrumental in making these improvements possible.
 
 ## References
 
