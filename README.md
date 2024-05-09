@@ -49,7 +49,7 @@ Once built, the firmware `picow-usb-failures.uf2` will be generated. Simply drag
 
 ## Results
 
-Firmware from this repository monitors the USB connection status of Pico and Pico W and continuously reports the USB connection status to the UART every second.
+The firmware in this repository monitors the USB connection status of Pico and Pico W and continuously reports the USB connection status to the UART and onboard LEDs every second.
 To observe the UART output under battery power, use the _Raspberry Pi Debug Probe_[^6] to monitor the UART.
 For the Pico, when connected to the host PC, the status changes as follows:
 ```
