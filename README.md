@@ -88,9 +88,15 @@ Pico W:
 - USB cable connected to Pico W, and finally to host: `0.97..1.09 V` (Multimeter readings are not stable)
 - USB cable connected to host, and finally to Pico W: `5.16 V`
 
-## Temporary solutions
+Under the conditions in question, the host PC does not supply VBUS power to the Pico W when the cable is connected.
+Furthermore, the VBUS on the Pico W showed a voltage of 1.36V when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery.
 
-### Software solution
+## Conclusion
+
+The VBUS of Pico W during battery operation exceeds the 'vSafe0V' (0-0.8V) defined by USB Power Delivery. It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons.
+It would be preferable if Pico W could modify the circuitry or firmware to address this issue, but fortunately there are two countermeasures available for end-users to adopt.
+
+### Software temporary solution
 
 This problem can be avoided by setting `WL_GPIO 2` to __Low__.
 ```diff
@@ -99,7 +105,7 @@ This problem can be avoided by setting `WL_GPIO 2` to __Low__.
 ```
 This is not a good approach, although the behaviour is as expected.
 
-### Hardware solution
+### Hardware temporary solution
 
 This problem can be avoided by pull-down the `VBUS`.
 
@@ -116,3 +122,5 @@ I would like to express my gratitude to the [Raspberry Pi Pico forum](https://fo
 - [Raspberry Pi Pico Datasheet](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
 - [Raspberry Pi Pico W Datasheet](https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf)
 - [RP2040 Datasheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
+- [USB Type-C® Cable and Connector Specification](https://www.usb.org/document-library/usb-type-cr-cable-and-connector-specification-release-23)
+- [Universal Serial Bus Power Delivery Specification](https://usb.org/document-library/usb-power-delivery)
