@@ -8,19 +8,21 @@ This repository investigates a specific issue that occurs when the battery-power
 
 This phenomenon does not occur if the cable is connected in the reverse order from the host PC to the Pico W, or when using a USB Type-A connection. And interestingly, it does not occur with the standard Raspberry Pi Pico either.
 
-## Technical Investigation
+## Investigation Methodology
 
 To understand and diagnose this issue, the following methods were employed:
 
 - GPIO: monitored GPIOs connected to VBUS (`GPIO24` for Pico and `WL_GPIO 2` for Pico W).
 - RP2040 register: monitored the `USB: SIE_STATUS` register on the RP2040.
 - TinyUSB: call `tud_ready()` function to check if USB communication was ready.
+- Voltage on VBUS: the voltage on `VBUS` (between pins 40 VBUS and 38 GND) was measured with a multimeter.
 
+Identical tests were also carried out on six Pico Ws to rule out the possibility of the problem being a problem with a particular individual Pico W.
 The monitoring results matched the USB communication state, but the behavior of the Pico W when connected to the host PC was not as expected. Further behavior is detailed below.
 
 ### Build and Install Instructions
 
-The build requires the [pico-sdk](https://github.com/raspberrypi/pico-sdk) build environment; refer to [Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare the toolchain for your platform.
+The [pico-sdk](https://github.com/raspberrypi/pico-sdk) build environment is required to build the firmware used for this monitoring, see  [Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare the toolchain for your platform.
 
 #### Build for Pico
 
@@ -45,7 +47,7 @@ Once built, the firmware `picow-usb-failures.uf2` will be generated. Simply drag
 
 ![circut_diagram](https://github.com/oyama/pico-w-usb-failures/assets/27072/064b206d-8506-4cf4-a0ed-b6e6422890a5)
 
-## Monitoring USB Connection Status
+## Results
 
 Firmware from this repository monitors the USB connection status of Pico and Pico W and continuously reports the USB connection status to the UART every second.
 To observe the UART output under battery power, use the [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) to monitor the UART.
@@ -85,7 +87,7 @@ Pico:
 Pico W:
 
 - USB cable disconnected: `1.36 V`
-- USB cable connected to Pico W, and finally to host: `0.97..1.09 V` (Multimeter readings are not stable)
+- USB cable connected to Pico W, and finally to host: `0.97-1.09 V` (Multimeter readings are not stable)
 - USB cable connected to host, and finally to Pico W: `5.16 V`
 
 Under the conditions in question, the host PC does not supply VBUS power to the Pico W when the cable is connected.
