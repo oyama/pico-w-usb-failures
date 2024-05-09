@@ -99,22 +99,26 @@ The VBUS of the Pico W during battery operation exceeds `vSafe0V` (0-0.8V). It i
 
 It would be desirable if Pico W could address this issue by changing the circuitry or firmware, and it would be useful to mention this issue in the Pico W datasheet. Fortunately, there are two measures that end-users can adopt now.
 
-### Software temporary solution
+### Software solution
 
 This problem can be avoided by setting `WL_GPIO 2` to __Low__.
 ```diff
      cyw43_arch_init();
 +    cyw43_arch_gpio_put(2, 0);
 ```
-This is not a good approach, although the behaviour is as expected.
+This method shows the expected behaviour, but with the limitation that the use case where you want to get the VBUS status via GPIOs will not work.
 
-### Hardware temporary solution
+### Hardware solution
 
 This problem can be avoided by pull-down the `VBUS`.
 
 ![Pico W USB Pull-down](https://github.com/oyama/pico-w-usb-failures/assets/27072/bc719325-4708-4c03-8ac4-2c62f3b2c0bb)
 
 Pull-down resistor `R1` works as expected at around 1 kOhm. Considering the USB suspend requirements, around 10 kOhm may be appropriate, but this has not been tested.
+
+### Limitation
+
+These investigations and solutions are limited to using Pico W as a USB device; using Pico W as a USB host has not been investigated.
 
 ## Acknowledgements
 
