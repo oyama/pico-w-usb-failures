@@ -78,17 +78,10 @@ The USB connection status recognized by the devices matches the device recogniti
 
 A multimeter was used to measure the change in voltage on `VBUS`(pin 40) and `GND`(pin 38) of Pico and Pico W. Power is supplied to `VSYS` under all conditions.
 
-Pico:
-
-- USB cable disconnected: `0.42 V`
-- USB cable connected to Pico, and finally to host: `5.17 V`
-- USB cable connected to host, and finally to Pico: `5.17 V`
-
-Pico W:
-
-- USB cable disconnected: `1.36 V`
-- USB cable connected to Pico W, and finally to host: `0.97-1.09 V` (Multimeter readings are not stable)
-- USB cable connected to host, and finally to Pico W: `5.16 V`
+| Device  | Voltage with USB Disconnected | Voltage after connecting to device first, then host | Voltage after connecting to host first, then device |
+|---------|-------------------------------|----------------------------------------------------|-----------------------------------------------------|
+| Pico    | 0.42 V                        | 5.17 V                                             | 5.17 V                                               |
+| Pico W  | 1.36 V                        | 0.97..1.09 V (unstable)                            | 5.16 V                                               |
 
 Under the conditions in question, the host PC does not supply VBUS power to the Pico W when the cable is connected.
 Furthermore, the VBUS on the Pico W showed a voltage of `1.36 V` when no cable was connected. This exceeds the `vSafe0V` (0-0.8V) defined by USB Power Delivery[^7].
@@ -97,7 +90,7 @@ Furthermore, the VBUS on the Pico W showed a voltage of `1.36 V` when no cable w
 
 The VBUS of the Pico W during battery operation exceeds `vSafe0V` (0-0.8V). It is therefore suspected that the USB controller of the host PC accepting the connection has deactivated the VBUS supply for safety reasons. micro USB and Type-C cable circuits for mixed use are defined in USB Type-C Spec[^8] as _Legacy Cable Assemblies_ which is defined as. The circuits and states expected when connecting devices using these cables are then explicitly stated. A device with a VBUS in excess of `vSafe0V`, as in this Issue, connecting to a host PC with Type-C would have unintended consequences for the user.
 
-It would be desirable if Pico W could address this issue by changing the circuitry or firmware, and it would be useful to mention this issue in the Pico W datasheet. Fortunately, there are two measures that end-users can adopt now.
+It would be desirable if Pico W could address this issue by changing the circuitry or firmware, and it would be useful to mention this issue in the Pico W datasheet. I have already reported this issue to pico-feedback[^9]. Fortunately, there are two measures that end-users can adopt now.
 
 ### Software solution
 
@@ -122,7 +115,7 @@ These investigations and solutions are limited to using Pico W as a USB device; 
 
 ## Acknowledgements
 
-I would like to express my gratitude to the Raspberry Pi Pico forum[^9] for their invaluable advice and insights, which greatly assisted in the development of the solutions documented in this README. Your contributions have been instrumental in making these improvements possible.
+I would like to express my gratitude to the Raspberry Pi Pico forum[^10] for their invaluable advice and insights, which greatly assisted in the development of the solutions documented in this README. Your contributions have been instrumental in making these improvements possible.
 
 ## References
 
@@ -134,4 +127,6 @@ I would like to express my gratitude to the Raspberry Pi Pico forum[^9] for thei
 [^6]: [Raspberry Pi Debug Probe](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html) 
 [^7]: [Universal Serial Bus Power Delivery Specification](https://usb.org/document-library/usb-power-delivery)
 [^8]: [USB Type-C® Cable and Connector Specification](https://www.usb.org/document-library/usb-type-cr-cable-and-connector-specification-release-23)
-[^9]: [Raspberry Pi Pico forum](https://forums.raspberrypi.com/viewtopic.php?t=370292)
+[^9]: [raspberrypi/pico-feedback](https://github.com/raspberrypi/pico-feedback/issues/391)
+[^10]: [Raspberry Pi Pico forum](https://forums.raspberrypi.com/viewtopic.php?t=370292)
+
